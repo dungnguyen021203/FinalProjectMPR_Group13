@@ -1,5 +1,6 @@
 import Label from '../models/label';
 import Note from '../models/note';
+import Folder from '../models/folders';
 
 export const LABELS = [
     new Label('l1', 'React Native'),
@@ -23,4 +24,11 @@ export const TRASH = [
     new Note('n5', COLORS[0], ['l4'], 'Learn React Native Navigation', new Date('2024-5-10T14:30:00'), true),
     new Note('n6', null, ['l4', 'l2', 'l1'], 'A simple note', new Date('2024-5-10T14:35:00'), false),
     new Note('n7', COLORS[6], ['l1', 'l2', 'l3', 'l4'], 'One more note', new Date('2024-4-20T15:30:00'), false),
-    ]
+    ];
+
+export const FOLDERS = [
+    new Folder('f1', 'Personal', new Date('2024-5-10T12:30:00'), ['n1', 'n2', 'n3']),
+    new Folder('f2', 'Work', new Date('2024-5-10T12:30:00'), ['n4']),
+    new Folder('f3', 'Trash', new Date('2024-4-20T15:30:00'), ['n5', 'n6', 'n7'])
+];
+
