@@ -29,6 +29,6 @@ export const TRASH = [
 export const FOLDERS = [
     new Folder('f1', 'Personal', new Date('2024-5-10T12:30:00'), ['n1', 'n2', 'n3']),
     new Folder('f2', 'Work', new Date('2024-5-10T12:30:00'), ['n4']),
-    new Folder('f3', 'Trash', new Date('2024-4-20T15:30:00'), ['n5', 'n6', 'n7'])
+    new Folder('f3', 'Trash', new Date('2024-4-20T15:30:00'), ['n8', 'n9', 'n10'])
 ];
 

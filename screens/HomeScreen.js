@@ -160,8 +160,9 @@ const styles = StyleSheet.create({
     bookmarked: {
         fontSize: 18,
         color: '#FFD700', 
-        textAlign: 'right',
-        marginTop: 10
+        marginTop: 10,
+        position: 'absolute',
+        right: 15,
     },
     notFoundContainer: {
         flex: 1,

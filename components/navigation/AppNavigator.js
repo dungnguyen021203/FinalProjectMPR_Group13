@@ -20,7 +20,7 @@ function MainDrawerNavigator() {
     return (
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={HomeScreen} />
-        {/* <Drawer.Screen name="Labels" component={LabelsScreen} /> */}
+        <Drawer.Screen name="Labels" component={LabelsScreen} />
         <Drawer.Screen name="Folders" component={FoldersScreen} />
         {/* <Drawer.Screen name="Trash" component={TrashScreen} /> */}
       </Drawer.Navigator>
