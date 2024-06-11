@@ -3,6 +3,7 @@ import Input from "./Input";
 import { useState } from "react";
 import IconButton from "../ui/IconButton";
 
+// For Adding a New Note
 function NoteForm({onSubmit}) {
     const [inputValues, setInputValues] = useState({
         color: '',

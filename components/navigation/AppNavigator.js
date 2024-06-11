@@ -27,7 +27,8 @@ function MainDrawerNavigator() {
             name="Labels" component={LabelsScreen} />
         <Drawer.Screen options={{drawerIcon: ({ size, color}) => (<Ionicons name="folder" size={size} color={color} />)}}
             name="Folders" component={FoldersScreen} />
-        {/* <Drawer.Screen name="Trash" component={TrashScreen} /> */}
+        <Drawer.Screen options={{drawerIcon: ({ size, color}) => (<Ionicons name="trash" size={size} color={color} />)}}
+            name="Trash" component={TrashScreen} />
       </Drawer.Navigator>
     );
   }
