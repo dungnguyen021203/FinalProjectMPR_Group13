@@ -1,28 +1,29 @@
-import React from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { useContext, useLayoutEffect } from "react";
+import { Text, TextInput, View } from "react-native";
+import { NotesContext } from "../components/context/NotesContext";
+import NoteForm from "../components/noteManage/NoteForm";
 
-const NewNoteScreen = ({ navigation }) => {
-  return (
-    <View style={styles.screen}>
-      <TextInput style={styles.input} placeholder="Enter your note here" />
-      <Button title="Save" onPress={() => navigation.goBack()} />
-    </View>
-  );
-};
+function NewNoteScreen({navigation}) {
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  input: {
-    width: '80%',
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-  },
-});
+    const notesCtx = useContext(NotesContext);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'New note',
+        });
+    }, [navigation]);
+
+    function confirmHandler(noteData){
+        notesCtx.addNote(noteData);
+        navigation.goBack();
+    }
+
+    return ( 
+        <View >
+            <NoteForm onSubmit={confirmHandler} />
+            
+        </View>
+    );
+}
 
 export default NewNoteScreen;

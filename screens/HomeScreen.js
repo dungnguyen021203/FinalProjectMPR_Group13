@@ -1,4 +1,4 @@
-import React, {useState, useLayoutEffect} from 'react';
+import React, { useState, useLayoutEffect, useContext, useEffect } from 'react';
 import {
     View,
     Text,
@@ -7,13 +7,19 @@ import {
     TextInput,
     StyleSheet
 } from 'react-native';
-import {NOTES, LABELS} from '../data/dummy-data';
+import { NotesContext } from "../components/context/NotesContext";
 import Icon from 'react-native-vector-icons/Ionicons';
+import { LABELS } from '../data/dummy-data';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
+    const { notes } = useContext(NotesContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchVisible, setIsSearchVisible] = useState(false);
-    const [filteredNotes, setFilteredNotes] = useState(NOTES);
+    const [filteredNotes, setFilteredNotes] = useState(notes);
+
+    useEffect(() => {
+        setFilteredNotes(notes);
+    }, [notes]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -50,9 +56,9 @@ const HomeScreen = ({navigation}) => {
     const handleSearch = (query) => {
         setSearchQuery(query);
         if (query === '') {
-            setFilteredNotes(NOTES);
+            setFilteredNotes(notes);
         } else {
-            const filtered = NOTES.filter((note) => note.content.toLowerCase().includes(query.toLowerCase()));
+            const filtered = notes.filter((note) => note.content.toLowerCase().includes(query.toLowerCase()));
             setFilteredNotes(filtered);
         }
     };
@@ -61,16 +67,16 @@ const HomeScreen = ({navigation}) => {
         const {
             id,
             color,
-            labelIds,
+            labelIds = [], 
             content,
             updateAt,
             isBookmarked
         } = itemData.item;
 
-        const noteLabels = labelIds.map((labelId) => {
+        const noteLabels = (labelId) => {
             const label = LABELS.find((label) => label.id === labelId);
-            return label.label
-        });
+            return label ? label.label : '';
+        };
 
         return (
             <TouchableOpacity
@@ -82,9 +88,9 @@ const HomeScreen = ({navigation}) => {
             ]}>
                 <Text style={styles.noteDate}>{new Date(updateAt).toLocaleString()}</Text>
                 <View style={styles.labelsContainer}>
-                    {noteLabels.map((label, index) => (
+                    {labelIds && labelIds.map((labelId, index) => (
                         <View key={index} style={styles.labelTag}>
-                            <Text style={styles.labelText}>{label}</Text>
+                            <Text style={styles.labelText}>{noteLabels(labelId)}</Text>
                         </View>
                     ))}
                 </View>

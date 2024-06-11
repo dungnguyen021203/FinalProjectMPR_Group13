@@ -13,15 +13,20 @@ import NewNoteScreen from "../../screens/NewNoteScreen";
 import ManageLabelsScreen from "../../screens/ManageLabelsScreen";
 import FolderNotesScreen from "../../screens/FolderNotesScreen";
 
+import { Ionicons } from '@expo/vector-icons';
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function MainDrawerNavigator() {
     return (
       <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Labels" component={LabelsScreen} />
-        <Drawer.Screen name="Folders" component={FoldersScreen} />
+        <Drawer.Screen options={{drawerIcon: ({ size, color}) => (<Ionicons name="home" size={size} color={color} />)}}
+            name="Home" component={HomeScreen} />
+        <Drawer.Screen options={{drawerIcon: ({ size, color}) => (<Ionicons name="pricetag" size={size} color={color} />)}}
+            name="Labels" component={LabelsScreen} />
+        <Drawer.Screen options={{drawerIcon: ({ size, color}) => (<Ionicons name="folder" size={size} color={color} />)}}
+            name="Folders" component={FoldersScreen} />
         {/* <Drawer.Screen name="Trash" component={TrashScreen} /> */}
       </Drawer.Navigator>
     );
