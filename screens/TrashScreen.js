@@ -14,7 +14,7 @@ function TrashScreen({ navigation }) {
             "Restore All Notes",
             "Are you sure you want to restore all notes from trash?",
             [
-                { text: "Cancel", onPress: () => navigation.goBack(), style: "cancel" },
+                { text: "Cancel", onPress: () => navigation.navigate("Trash"), style: "cancel" },
                 { text: "Restore", onPress: () => notesCtx.restoreAllNotes() },
             ]
         );
@@ -25,7 +25,7 @@ function TrashScreen({ navigation }) {
             "Delete All Notes Permanently",
             "This action cannot be undone. Are you sure you want to permanently delete all notes from trash?",
             [
-                { text: "Cancel", onPress: () => navigation.goBack(), style: "cancel" },
+                { text: "Cancel", onPress: () => navigation.navigate("Trash"), style: "cancel" },
                 { text: "Delete", onPress: () => notesCtx.deleteAllNotes() },
             ]
         );
@@ -46,8 +46,8 @@ function TrashScreen({ navigation }) {
                     "What do you want to do with this note?",
                     [
                         { text: "Cancel", onPress: () => navigation.navigate("Trash"), style: "cancel" },
-                        { text: "Restore", style: "default", onPress: () => notesCtx.restoreNote(id) },
-                        { text: "Delete Permanently", style: "destructive", onPress: () => notesCtx.deleteNote(id) },
+                        { text: "Restore", style: "default", onPress: () => notesCtx.restoreNote({id}) },
+                        { text: "Delete Permanently", style: "destructive", onPress: () => notesCtx.deleteNote({id}) },
                     ]
                 );
             }
@@ -57,8 +57,8 @@ function TrashScreen({ navigation }) {
             <Pressable onPress={notePressHandler} style={({ pressed }) => [styles.noteItem, { backgroundColor: color || '#ccc' }, pressed && styles.pressed] }>
                 <Text style={styles.noteDate}>{new Date(updateAt).toLocaleString()}</Text>
                 <View style={styles.labelsContainer}>
-                    {labelIds && labelIds.map((labelId, index) => (
-                        <View key={index} style={styles.labelTag}>
+                    {labelIds && labelIds.map((labelId) => (
+                        <View key={labelId} style={styles.labelTag}>
                             <Text style={styles.labelText}>{getLabelContent(labelId)}</Text>
                         </View>
                     ))}
@@ -77,14 +77,21 @@ function TrashScreen({ navigation }) {
     return (
         <View>
             <View style={styles.buttonContainer}>
-                <Button onPress={restoreAllNotes} children="Restore All" style={{ margin: 4, backgroundColor: '#00CCFF', borderRadius: 6, }} />
-                <Button onPress={deleteAllNotes} children="Delete All" style={{ margin: 4, backgroundColor: '#FF0033', borderRadius: 6, }} />
+                <Button onPress={restoreAllNotes} children="Restore All" style={{ margin: 4, backgroundColor: '#00CCFF', borderRadius: 6, }} disabled={notesCtx.trash.length === 0} />
+                <Button onPress={deleteAllNotes} children="Delete All" style={{ margin: 4, backgroundColor: '#FF0033', borderRadius: 6, }} disabled={notesCtx.trash.length === 0} />
             </View>
-            <FlatList
-                data={notesCtx.trash}
-                renderItem={renderNotesItem}
-                keyExtractor={(item) => item.id}
-            />
+
+            {notesCtx.trash.length === 0 ? (
+                <View style={{ alignItems: 'center', marginTop: 50 }}>
+                    <Text style={{ fontSize: 18, color: '#666' }}>Trash is empty</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={notesCtx.trash}
+                    renderItem={renderNotesItem}
+                    keyExtractor={(item) => item.id}
+                />
+            )}
         </View>
     );
 }
