@@ -1,58 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
     View,
     Text,
-    FlatList,
     TextInput,
-    StyleSheet,
+    FlatList,
+    TouchableOpacity,
+    Alert,
+    StyleSheet
 } from 'react-native';
-import { LABELS } from '../data/dummy-data';
+import { LabelsContext } from '../components/context/LabelsContext';
+import EditLabelModal from '../components/labelManage/EditLabelModal';
 
-const LabelsScreen = () => {
+const LabelsScreen = ({ navigation }) => {
+    const labelsCtx = useContext(LabelsContext);
+
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredLabels, setFilteredLabels] = useState(LABELS);
+    const [filteredLabels, setFilteredLabels] = useState(labelsCtx.labels);
+    const [selectedLabel, setSelectedLabel] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    useEffect(() => {
+        setFilteredLabels(labelsCtx.labels);
+    }, [labelsCtx.labels]);
 
     const handleSearch = (query) => {
         setSearchQuery(query);
         if (query === '') {
-            setFilteredLabels(LABELS);
+            setFilteredLabels(labelsCtx.labels);
         } else {
-            const filtered = LABELS.filter((label) =>
+            const filtered = labelsCtx.labels.filter((label) =>
                 label.label.toLowerCase().includes(query.toLowerCase())
             );
             setFilteredLabels(filtered);
         }
     };
 
-    const renderLabelItem = ({ item }) => {
-        const { label } = item;
+    const handleLabelPress = (label) => {
+        setSelectedLabel(label);
+        setIsModalVisible(true);
+    };
 
+    const handleSave = (id, newLabel) => {
+        labelsCtx.editLabel(id, newLabel);
+    };
+
+    const handleDelete = (id) => {
+        labelsCtx.deleteLabel(id);
+    };
+
+    const handleCreateNewLabel = () => {
+        labelsCtx.addLabel(searchQuery);
+        setSearchQuery('');  
+    };
+
+    const renderLabelItem = ({ item }) => {
         return (
-            <View style={styles.labelContainer}>
-                <Text style={styles.labelText}>{label}</Text>
-            </View>
+            <TouchableOpacity style={styles.labelContainer} onPress={() => handleLabelPress(item)}>
+                <Text style={styles.labelText}>{item.label}</Text>
+            </TouchableOpacity>
         );
     };
 
     return (
         <View style={styles.screen}>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Search labels..."
-                    value={searchQuery}
-                    onChangeText={handleSearch}
-                />
-            </View>
-            <Text style={styles.totalLabelsText}>Total Labels: {LABELS.length}</Text>
-
+            <TextInput
+                style={styles.searchInput}
+                placeholder="Search labels..."
+                value={searchQuery}
+                onChangeText={handleSearch}
+            />
+            <Text style={styles.totalLabelsText}>Total Labels: {labelsCtx.labels.length}</Text>
             <FlatList
                 data={filteredLabels}
                 keyExtractor={(item) => item.id}
                 renderItem={renderLabelItem}
                 numColumns={2}
                 columnWrapperStyle={styles.row}
+                ListHeaderComponent={searchQuery && filteredLabels.length === 0 ? (
+                    <TouchableOpacity onPress={handleCreateNewLabel}>
+                        <Text style={styles.createLabelText}>Create new label '{searchQuery}'</Text>
+                    </TouchableOpacity>
+                ) : null}
             />
+            {selectedLabel && (
+                <EditLabelModal
+                    visible={isModalVisible}
+                    onClose={() => setIsModalVisible(false)}
+                    label={selectedLabel}
+                    onSave={handleSave}
+                    onDelete={handleDelete}
+                />
+            )}
         </View>
     );
 };
@@ -60,27 +98,22 @@ const LabelsScreen = () => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-    },
-    inputContainer: {
         padding: 20,
     },
-    input: {
-        backgroundColor: 'white',
+    searchInput: {
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
         padding: 10,
         marginBottom: 10,
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#ccc',
     },
     totalLabelsText: {
-        paddingLeft: 20,
         fontWeight: 'bold',
         marginBottom: 10,
     },
     row: {
         flex: 1,
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
     },
     labelContainer: {
         flex: 1,
@@ -95,6 +128,11 @@ const styles = StyleSheet.create({
     labelText: {
         fontSize: 16,
         color: 'white',
+    },
+    createLabelText: {
+        fontStyle: 'italic',
+        color: 'gray',
+        marginVertical: 10,
     },
 });
 
