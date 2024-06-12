@@ -7,12 +7,13 @@ import LabelsContextProvider from './components/context/LabelsContext';
 
 export default function App() {
   return (
-    <LabelsContextProvider>
     <NotesContextProvider>
-      <SafeAreaProvider>
-        <AppNavigator />
-      </SafeAreaProvider>
+      <LabelsContextProvider>
+        <SafeAreaProvider>
+          <AppNavigator />
+        </SafeAreaProvider>
+      </LabelsContextProvider>
     </NotesContextProvider>
-    </LabelsContextProvider>
+    
   );
 }

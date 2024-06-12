@@ -1,5 +1,6 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useContext } from "react";
 import { LABELS } from "../../data/dummy-data";
+import { NotesContext } from "./NotesContext";
 
 const initialState = {
   labels: LABELS,
@@ -22,7 +23,8 @@ function labelsReducer(state, action) {
       if (labelIndex === -1) {
         return state;
       }
-      return { ...state, labels: [...state.labels.slice(0, labelIndex), ...state.labels.slice(labelIndex + 1)] };
+      const updatedLabels = [...state.labels.slice(0, labelIndex), ...state.labels.slice(labelIndex + 1)];
+      return { ...state, labels: updatedLabels };
     default:
       return state;
   }
@@ -32,6 +34,7 @@ export const LabelsContext = createContext(initialState);
 
 function LabelsContextProvider({ children }) {
   const [labelsState, dispatch] = useReducer(labelsReducer, initialState);
+  const notesCtx = useContext(NotesContext); // Access NotesContext
 
   function addLabel(label) {
     dispatch({ type: 'ADD_LABEL', data: label });
@@ -43,6 +46,7 @@ function LabelsContextProvider({ children }) {
 
   function deleteLabel(id) {
     dispatch({ type: 'DELETE_LABEL', data: id });
+    notesCtx.removeLabelFromNotes(id); // Remove label from notes
   }
 
   const value = {

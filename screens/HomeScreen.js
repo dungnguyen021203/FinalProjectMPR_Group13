@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 import { NotesContext } from "../components/context/NotesContext";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { LABELS } from '../data/dummy-data';
+import { LabelsContext } from "../components/context/LabelsContext"; 
 
 const HomeScreen = ({ navigation }) => {
     const { notes } = useContext(NotesContext);
+    const { labels } = useContext(LabelsContext); 
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [filteredNotes, setFilteredNotes] = useState(notes);
@@ -74,7 +75,7 @@ const HomeScreen = ({ navigation }) => {
         } = itemData.item;
 
         const noteLabels = (labelId) => {
-            const label = LABELS.find((label) => label.id === labelId);
+            const label = labels.find((label) => label.id === labelId); 
             return label ? label.label : '';
         };
 

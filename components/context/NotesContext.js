@@ -48,6 +48,14 @@ function notesReducer(state, action) {
       return { ...state, trash: [] };
     case 'EMPTY_TRASH':
       return { ...state, trash: [] };
+    case 'REMOVE_LABEL_FROM_NOTES':
+      return {
+        ...state,
+        notes: state.notes.map((note) => ({
+          ...note,
+          labelIds: note.labelIds.filter((labelId) => labelId !== action.data)
+        }))
+      };
     default:
       return state;
   }
@@ -86,6 +94,10 @@ function NotesContextProvider({ children }) {
         dispatch({ type: 'EMPTY_TRASH' });
     }
 
+    function removeLabelFromNotes(labelId) {
+      dispatch({ type: 'REMOVE_LABEL_FROM_NOTES', data: labelId });
+    }
+
     const value = {
         notes: notesState.notes,
         trash: notesState.trash,
@@ -96,6 +108,7 @@ function NotesContextProvider({ children }) {
         restoreAllNotes, 
         deleteAllNotes, 
         emptyTrash,
+        removeLabelFromNotes,
     };
 
     return <NotesContext.Provider value={value}>{children}</NotesContext.Provider>;
