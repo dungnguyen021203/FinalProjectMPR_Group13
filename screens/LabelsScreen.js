@@ -5,30 +5,29 @@ import {
     TextInput,
     FlatList,
     TouchableOpacity,
-    Alert,
     StyleSheet
 } from 'react-native';
-import { LabelsContext } from '../components/context/LabelsContext';
+import { UnifiedContext } from '../components/context/Context';
 import EditLabelModal from '../components/labelManage/EditLabelModal';
 
 const LabelsScreen = ({ navigation }) => {
-    const labelsCtx = useContext(LabelsContext);
+    const unifiedCtx = useContext(UnifiedContext);
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredLabels, setFilteredLabels] = useState(labelsCtx.labels);
+    const [filteredLabels, setFilteredLabels] = useState(unifiedCtx.labels);
     const [selectedLabel, setSelectedLabel] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     useEffect(() => {
-        setFilteredLabels(labelsCtx.labels);
-    }, [labelsCtx.labels]);
+        setFilteredLabels(unifiedCtx.labels);
+    }, [unifiedCtx.labels]);
 
     const handleSearch = (query) => {
         setSearchQuery(query);
         if (query === '') {
-            setFilteredLabels(labelsCtx.labels);
+            setFilteredLabels(unifiedCtx.labels);
         } else {
-            const filtered = labelsCtx.labels.filter((label) =>
+            const filtered = unifiedCtx.labels.filter((label) =>
                 label.label.toLowerCase().includes(query.toLowerCase())
             );
             setFilteredLabels(filtered);
@@ -41,15 +40,15 @@ const LabelsScreen = ({ navigation }) => {
     };
 
     const handleSave = (id, newLabel) => {
-        labelsCtx.editLabel(id, newLabel);
+        unifiedCtx.editLabel(id, newLabel);
     };
 
     const handleDelete = (id) => {
-        labelsCtx.deleteLabel(id);
+        unifiedCtx.deleteLabel(id);
     };
 
     const handleCreateNewLabel = () => {
-        labelsCtx.addLabel(searchQuery);
+        unifiedCtx.addLabel(searchQuery);
         setSearchQuery('');  
     };
 
@@ -69,7 +68,7 @@ const LabelsScreen = ({ navigation }) => {
                 value={searchQuery}
                 onChangeText={handleSearch}
             />
-            <Text style={styles.totalLabelsText}>Total Labels: {labelsCtx.labels.length}</Text>
+            <Text style={styles.totalLabelsText}>Total Labels: {unifiedCtx.labels.length}</Text>
             <FlatList
                 data={filteredLabels}
                 keyExtractor={(item) => item.id}

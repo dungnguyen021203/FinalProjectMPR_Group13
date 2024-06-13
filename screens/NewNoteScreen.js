@@ -1,11 +1,10 @@
 import { useContext, useLayoutEffect } from "react";
 import { Text, TextInput, View } from "react-native";
-import { NotesContext } from "../components/context/NotesContext";
+import { UnifiedContext } from "../components/context/Context";
 import NoteForm from "../components/noteManage/NoteForm";
 
-function NewNoteScreen({navigation}) {
-
-    const notesCtx = useContext(NotesContext);
+function NewNoteScreen({ navigation }) {
+    const { addNote } = useContext(UnifiedContext);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -13,15 +12,14 @@ function NewNoteScreen({navigation}) {
         });
     }, [navigation]);
 
-    function confirmHandler(noteData){
-        notesCtx.addNote(noteData);
+    function confirmHandler(noteData) {
+        addNote(noteData);
         navigation.goBack();
     }
 
-    return ( 
-        <View >
+    return (
+        <View>
             <NoteForm onSubmit={confirmHandler} />
-            
         </View>
     );
 }

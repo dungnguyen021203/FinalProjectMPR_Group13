@@ -1,32 +1,31 @@
 import React, { useContext } from 'react';
 import { View, Alert, StyleSheet, Text, FlatList, Pressable } from "react-native";
 import Button from "../components/ui/Button";
-import { NotesContext } from "../components/context/NotesContext";
-import { LABELS } from "../data/dummy-data";
+import { UnifiedContext } from "../components/context/Context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 function TrashScreen({ navigation }) {
-    const notesCtx = useContext(NotesContext);
+    const { trash, restoreAllNotes, deleteAllNotes, restoreNote, deleteNote, labels } = useContext(UnifiedContext);
 
-    const restoreAllNotes = () => {
+    const restoreAllNotesHandler = () => {
         Alert.alert(
             "Restore All Notes",
             "Are you sure you want to restore all notes from trash?",
             [
                 { text: "Cancel", onPress: () => navigation.navigate("Trash"), style: "cancel" },
-                { text: "Restore", onPress: () => notesCtx.restoreAllNotes() },
+                { text: "Restore", onPress: restoreAllNotes },
             ]
         );
     };
 
-    const deleteAllNotes = () => {
+    const deleteAllNotesHandler = () => {
         Alert.alert(
             "Delete All Notes Permanently",
             "This action cannot be undone. Are you sure you want to permanently delete all notes from trash?",
             [
                 { text: "Cancel", onPress: () => navigation.navigate("Trash"), style: "cancel" },
-                { text: "Delete", onPress: () => notesCtx.deleteAllNotes() },
+                { text: "Delete", onPress: deleteAllNotes },
             ]
         );
     };
@@ -35,7 +34,7 @@ function TrashScreen({ navigation }) {
         const route = useRoute();
 
         const getLabelContent = (labelId) => {
-            const foundLabel = LABELS.find((label) => label.id === labelId);
+            const foundLabel = labels.find((label) => label.id === labelId);
             return foundLabel?.label || "";
         };
 
@@ -46,8 +45,8 @@ function TrashScreen({ navigation }) {
                     "What do you want to do with this note?",
                     [
                         { text: "Cancel", onPress: () => navigation.navigate("Trash"), style: "cancel" },
-                        { text: "Restore", style: "default", onPress: () => notesCtx.restoreNote({id}) },
-                        { text: "Delete Permanently", style: "destructive", onPress: () => notesCtx.deleteNote({id}) },
+                        { text: "Restore", style: "default", onPress: () => restoreNote(id) },
+                        { text: "Delete Permanently", style: "destructive", onPress: () => deleteNote(id) },
                     ]
                 );
             }
@@ -70,24 +69,24 @@ function TrashScreen({ navigation }) {
         );
     }
 
-    const renderNotesItem = (itemData) => {
-        return <NoteItem {...itemData.item} />;
+    const renderNotesItem = ({ item }) => {
+        return <NoteItem {...item} />;
     };
 
     return (
         <View>
             <View style={styles.buttonContainer}>
-                <Button onPress={restoreAllNotes} children="Restore All" style={{ margin: 4, backgroundColor: '#00CCFF', borderRadius: 6, }} disabled={notesCtx.trash.length === 0} />
-                <Button onPress={deleteAllNotes} children="Delete All" style={{ margin: 4, backgroundColor: '#FF0033', borderRadius: 6, }} disabled={notesCtx.trash.length === 0} />
+                <Button onPress={restoreAllNotesHandler} children="Restore All" style={{ margin: 4, backgroundColor: '#00CCFF', borderRadius: 6, }} disabled={trash.length === 0} />
+                <Button onPress={deleteAllNotesHandler} children="Delete All" style={{ margin: 4, backgroundColor: '#FF0033', borderRadius: 6, }} disabled={trash.length === 0} />
             </View>
 
-            {notesCtx.trash.length === 0 ? (
+            {trash.length === 0 ? (
                 <View style={{ alignItems: 'center', marginTop: 50 }}>
                     <Text style={{ fontSize: 18, color: '#666' }}>Trash is empty</Text>
                 </View>
             ) : (
                 <FlatList
-                    data={notesCtx.trash}
+                    data={trash}
                     renderItem={renderNotesItem}
                     keyExtractor={(item) => item.id}
                 />

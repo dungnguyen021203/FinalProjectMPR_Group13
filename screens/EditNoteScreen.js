@@ -7,12 +7,11 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { NotesContext } from "../components/context/NotesContext";
+import { UnifiedContext } from "../components/context/Context";
 import { GlobalStyles } from "../constants/colors";
 import NoteForm from "../components/noteManage/NoteForm";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
-import { LABELS } from "../data/dummy-data";
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -21,11 +20,12 @@ import {
 
 function EditNoteScreen({ route, navigation }) {
   // State to manage attributes of Note
-  const NoteCtx = useContext(NotesContext);
+  const { notes, trash, labels, editNote, deleteNote } = useContext(UnifiedContext);
   const editedNoteID = route.params.noteId;
   const bottomSheetModalRef = useRef(null);
   const snapPoints = ["25%", "50%"];
   const [selectedColor, setSelectedColor] = useState(null);
+
   // Function to handle opening the bottom sheet
   const handleOpenBottomSheet = () => {
     bottomSheetModalRef.current?.present();
@@ -36,50 +36,28 @@ function EditNoteScreen({ route, navigation }) {
     console.log("bottom sheet state changed to", index);
   };
 
-  //variables to display bottom tab and labels and some try catch blocks to handle errors
-
-  var noteIndex = NoteCtx.notes.findIndex((note) => note.id === editedNoteID);
-  if (noteIndex === undefined || noteIndex === -1) {
-    noteIndex = NoteCtx.trash.findIndex((note) => note.id === editedNoteID);
+  // Find the index and details of the note to be edited
+  var noteIndex = notes.findIndex((note) => note.id === editedNoteID);
+  if (noteIndex === -1) {
+    noteIndex = trash.findIndex((note) => note.id === editedNoteID);
   }
 
-  try {
-    var updatedTime = new Date(
-      NoteCtx.notes[noteIndex].updateAt
-    ).toLocaleString();
-  } catch (error) {
-    updatedTime = new Date(NoteCtx.trash[noteIndex].updateAt).toLocaleString();
-  }
+  const note = notes[noteIndex] || trash[noteIndex];
+  const updatedTime = new Date(note.updateAt).toLocaleString();
+  const bookMark = note.isBookmarked;
+  const labelID = note.labelIds || []; // Ensure labelID is an array
+  const foundLabels = labels.filter((label) => labelID.includes(label.id));
+  const labelNames = foundLabels.map((label) => label.label);
 
-  try {
-    var bookMark = NoteCtx.notes[noteIndex].isBookmarked;
-  } catch (error) {
-    bookMark = NoteCtx.trash[noteIndex].isBookmarked;
-  }
   const [bookmarkStatus, setBookmarkStatus] = useState(bookMark);
 
-  try {
-    var labelID = NoteCtx.notes[noteIndex].labelIds;
-  } catch (error) {
-    labelID = NoteCtx.trash[noteIndex].labelIds;
-  }
-  try {
-    var foundLabels = NoteCtx.labels.filter((label) =>
-      labelID.includes(label.id)
-    );
-    var labelNames = [];
-    for (var i = 0; i < foundLabels.length; i++) {
-      labelNames.push(foundLabels[i].label);
-    }
-  } catch (error) {}
-
-  //function to toggle bookmark status
+  // Function to toggle bookmark status
   function toggleBookmark() {
     const newBookmarkStatus = !bookmarkStatus;
     setBookmarkStatus(newBookmarkStatus); // Update state to trigger re-render
   }
 
-  //function to delete note
+  // Function to delete note
   function deleteNoteHandler() {
     Alert.alert(
       "Delete this note!",
@@ -89,36 +67,37 @@ function EditNoteScreen({ route, navigation }) {
         {
           text: "Delete",
           onPress: () => {
-            NoteCtx.deleteNote(editedNoteID), navigation.goBack();
+            deleteNote(editedNoteID);
+            navigation.goBack();
           },
         },
       ]
     );
   }
 
-  //function to handle color press
+  // Function to handle color press
   function handleColorPress(color) {
     const updatedColorNote = {
-      ...NoteCtx.notes[noteIndex],
+      ...note,
       color: color,
     };
 
-    NoteCtx.editNote(editedNoteID, updatedColorNote);
+    editNote(editedNoteID, updatedColorNote);
   }
 
-  //function to cancel edit note
+  // Function to cancel edit note
   function cancelNoteHandler() {
     navigation.goBack();
   }
 
-  //function to edit note
+  // Function to edit note
   function editNoteHandler(NoteData) {
-    NoteCtx.editNote(editedNoteID, NoteData);
+    editNote(editedNoteID, NoteData);
     alert("Note updated successfully!");
     navigation.goBack();
   }
 
-  //function to render labels
+  // Function to render labels
   const renderLabel = ({ item }) => (
     <View style={styles.labelTag}>
       <Text>{item}</Text>
@@ -127,7 +106,7 @@ function EditNoteScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* display labels */}
+      {/* Display labels */}
       <FlatList
         data={labelNames}
         renderItem={renderLabel}
@@ -135,17 +114,15 @@ function EditNoteScreen({ route, navigation }) {
         numColumns={2}
         style={styles.labelsContainer}
       />
-      {/* display NoteForm */}
+      {/* Display NoteForm */}
       <NoteForm
         onCancel={cancelNoteHandler}
         onSubmit={editNoteHandler}
         bookmarkStatus={bookmarkStatus}
-        initialContent={
-          NoteCtx.notes[noteIndex] ? NoteCtx.notes[noteIndex].content : ""
-        }
+        initialContent={note.content}
       />
 
-      {/* display Bottom Tab */}
+      {/* Display Bottom Tab */}
       <View style={styles.bottomTab}>
         <Text style={styles.timeText}>{updatedTime}</Text>
         <Ionicons
@@ -159,7 +136,7 @@ function EditNoteScreen({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* display Bottom Sheet Modal */}
+      {/* Display Bottom Sheet Modal */}
       <BottomSheetModalProvider>
         <View style={styles.container}>
           <BottomSheetModal

@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { NOTES } from '../data/dummy-data';
+import { UnifiedContext } from '../components/context/Context';
 
 const FolderNotesScreen = ({ route, navigation }) => {
-    const { notes = [] } = route.params;
+    const { notes } = useContext(UnifiedContext);
+    const { notes: folderNoteIds = [] } = route.params;
 
     // Find notes that belong to the selected folder
-    const folderNotes = NOTES.filter(note => notes.includes(note.id));
+    const folderNotes = notes.filter(note => folderNoteIds.includes(note.id));
 
     const renderNoteItem = (itemData) => {
         const { content, updateAt } = itemData.item;
@@ -33,9 +34,7 @@ const FolderNotesScreen = ({ route, navigation }) => {
             )}
             <TouchableOpacity
                 style={styles.addButton}
-                // onPress={() => navigation.navigate('NewNote')
-                    
-                // }
+                onPress={() => navigation.navigate('NewNote')}
             >
                 <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>

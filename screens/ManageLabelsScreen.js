@@ -1,46 +1,33 @@
 import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
-import { NotesContext } from "../components/context/NotesContext";
-import { LabelsContext } from "../components/context/LabelsContext";
+import { UnifiedContext } from "../components/context/Context";
 import IconButton from "../components/ui/IconButton";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 
 const ManageLabelsScreen = ({ navigation, route }) => {
-  // State to manage Note's labels
-  const NoteCtx = useContext(NotesContext);
-  const LabelCtx = useContext(LabelsContext);
+  const { labels, notes, editNote } = useContext(UnifiedContext);
   const noteIndex = route.params.noteIndex;
   const chosenLabels = route.params.labelArray;
-  const allLabelsArray = NoteCtx.labels.map((label) => label.label);
+  const allLabelsArray = labels.map((label) => label.label);
   const [highlightedLabels, setHighlightedLabels] = useState(chosenLabels);
 
-  // some try catch blocks to handle errors when manage labels
-  try {
-    var highlightedLabelIDs = NoteCtx.labels.reduce((acc, label) => {
-      if (highlightedLabels.includes(label.label)) {
-        acc.push(label.id);
-      }
-      return acc;
-    }, []);
-  } catch (error) {
-    highlightedLabelIDs = ["label1", "label2"];
-    setHighlightedLabels(["label1", "label2", "label3"]);
-  }
+  const highlightedLabelIDs = labels.reduce((acc, label) => {
+    if (highlightedLabels.includes(label.label)) {
+      acc.push(label.id);
+    }
+    return acc;
+  }, []);
 
   // function to toggle labels
-
   function toggleLabel(label) {
-    try {
-      if (highlightedLabels.includes(label)) {
-        setHighlightedLabels((prev) => prev.filter((l) => l !== label));
-      } else {
-        setHighlightedLabels((prev) => [...prev, label]);
-      }
-    } catch (error) {}
+    if (highlightedLabels.includes(label)) {
+      setHighlightedLabels((prev) => prev.filter((l) => l !== label));
+    } else {
+      setHighlightedLabels((prev) => [...prev, label]);
+    }
   }
 
   // function to render labels
-
   const renderLabel = ({ item }) => (
     <View
       style={
@@ -54,16 +41,15 @@ const ManageLabelsScreen = ({ navigation, route }) => {
       </Pressable>
     </View>
   );
-  
-  // function to handle submit
 
+  // function to handle submit
   function submitHandler() {
     const updatedNote = {
-      ...NoteCtx.notes[noteIndex],
+      ...notes[noteIndex],
       labelIds: highlightedLabelIDs,
     };
 
-    NoteCtx.editNote(noteIndex, updatedNote);
+    editNote(noteIndex, updatedNote);
     alert("Note updated successfully!");
     navigation.goBack();
   }
@@ -130,4 +116,5 @@ const styles = StyleSheet.create({
     right: 10,
   },
 });
+
 export default ManageLabelsScreen;

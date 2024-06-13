@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     View,
     Text,
@@ -6,10 +6,12 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
-import { NOTES, LABELS, FOLDERS } from '../data/dummy-data';
+import { UnifiedContext } from '../components/context/Context';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const FoldersScreen = ({ navigation }) => {
+    const { folders } = useContext(UnifiedContext);
+    console.log(folders);
 
     const renderFolderItem = (itemData) => {
         const { id, name, updateAt, notes } = itemData.item;
@@ -37,7 +39,7 @@ const FoldersScreen = ({ navigation }) => {
             </View>
 
             <FlatList
-                data={FOLDERS}
+                data={folders}
                 keyExtractor={(item) => item.id}
                 renderItem={renderFolderItem}
             />

@@ -7,13 +7,11 @@ import {
     TextInput,
     StyleSheet
 } from 'react-native';
-import { NotesContext } from "../components/context/NotesContext";
+import { UnifiedContext } from "../components/context/Context";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { LabelsContext } from "../components/context/LabelsContext"; 
 
 const HomeScreen = ({ navigation }) => {
-    const { notes } = useContext(NotesContext);
-    const { labels } = useContext(LabelsContext); 
+    const { notes, labels } = useContext(UnifiedContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [filteredNotes, setFilteredNotes] = useState(notes);
@@ -95,7 +93,9 @@ const HomeScreen = ({ navigation }) => {
                         </View>
                     ))}
                 </View>
-                <Text style={styles.noteContent}>{content}</Text>
+                {notes.length > 0 ? <Text style={styles.noteContent}>{content}</Text>
+                : <Text style={styles.noteContent}>No notes found!</Text>
+                }
                 {isBookmarked && <Text style={styles.bookmarked}>★</Text>}
             </TouchableOpacity>
         );
