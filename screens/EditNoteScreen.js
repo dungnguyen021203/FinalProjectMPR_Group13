@@ -174,9 +174,10 @@ function EditNoteScreen({ route, navigation }) {
                   </TouchableOpacity>
                 ))}
               </View>
-              <View style={styles.labelTag}>
+              
+              <View style={[styles.labelTag, { marginRight: 70, marginLeft: 70, marginTop: 20 }]}>
                 <TouchableOpacity
-                  labelID={labelID}
+                  labelID={labelNames}
                   onPress={() =>
                     navigation.navigate("ManageLabels", {
                       editedNoteID: editedNoteID,
@@ -188,6 +189,7 @@ function EditNoteScreen({ route, navigation }) {
                   <Text style={styles.labelText}>+ Manage labels</Text>
                 </TouchableOpacity>
               </View>
+
               <View style={styles.deleteButton}>
                 <Ionicons
                   name={"trash"}
@@ -223,8 +225,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   colorPicker: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     borderRadius: 20,
     margin: 4,
   },
@@ -282,7 +284,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   bottomSheetText: {
-    fontSize: 18,
+    marginLeft: 10,
+    fontSize: 20,
   },
   labelTag: {
     marginLeft: 30,
@@ -294,8 +297,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   labelText: {
-    fontSize: 12,
+    fontSize: 20,
     color: "#333",
+    textAlign: "center",
   },
   labelsContainer: {
     flexDirection: "row",
