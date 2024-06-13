@@ -38,8 +38,8 @@ function MainDrawerNavigator() {
       <Stack.Navigator initialRouteName="Main">
         <Stack.Screen name="Main" component={MainDrawerNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="NewNote" component={NewNoteScreen} />
-        {/* <Stack.Screen name="EditNote" component={EditNoteScreen} />
-        <Stack.Screen name="ManageLabels" component={ManageLabelsScreen} /> */}
+        <Stack.Screen name="EditNote" component={EditNoteScreen} />
+        <Stack.Screen name="ManageLabels" component={ManageLabelsScreen} />
         <Stack.Screen name="FolderNotes" component={FolderNotesScreen} />
       </Stack.Navigator>
     );

@@ -1,9 +1,10 @@
 import { createContext, useReducer } from "react";
-import { NOTES, TRASH } from "../../data/dummy-data";
+import { NOTES, TRASH, LABELS } from "../../data/dummy-data";
 
 const initialState = {
   notes: NOTES,
   trash: TRASH,
+  labels: LABELS,
 };
 
 function notesReducer(state, action) {
@@ -18,20 +19,33 @@ function notesReducer(state, action) {
           note.id === action.data.id ? { ...note, ...action.data } : note
         ),
       };
-    case 'DELETE_NOTE': {
+    case "DELETE_NOTE": {
         // Find the note to be deleted from the trash
-        const trashIndex = state.trash.findIndex((note) => note.id === action.data.id);
-        if (trashIndex === -1) {
-          // Note not found in trash, skip further processing
-          return state;
+      const trashIndex = state.trash.findIndex(
+          (note) => note.id === action.data.id
+      );
+      if (trashIndex === -1) {
+        // Note not found in trash, found note in the notes array and delete it from the notes array, then move it to the trash array
+        const noteIndex = state.notes.findIndex(
+          (note) => note.id === action.data
+        );
+        const updatedNotes = [
+            ...state.notes.slice(0, noteIndex),
+            ...state.notes.slice(noteIndex + 1),
+        ];
+          const updatedTrash = [...state.trash, state.notes[noteIndex]];
+          return { ...state, notes: updatedNotes, trash: updatedTrash };
         }
   
         // Create a new trash array without the deleted note
-        const updatedTrash = [...state.trash.slice(0, trashIndex), ...state.trash.slice(trashIndex + 1)];
+        const updatedTrash = [
+          ...state.trash.slice(0, trashIndex),
+          ...state.trash.slice(trashIndex + 1),
+        ];
   
         // Update the state with the modified trash array
         return { ...state, trash: updatedTrash };
-    }
+      }
     case 'RESTORE_NOTE': {
       const restoredNote = state.trash.find((note) => note.id === action.data.id);
       if (!restoredNote) return state; // Handle potential missing note
@@ -101,6 +115,7 @@ function NotesContextProvider({ children }) {
     const value = {
         notes: notesState.notes,
         trash: notesState.trash,
+        labels: notesState.labels,
         addNote,
         deleteNote,
         editNote,

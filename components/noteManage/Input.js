@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     inputMultiline: {
-        minHeight: 650,
+        minHeight: 400,
         textAlignVertical:  'top',
         backgroundColor: '#EEEEEE',
         padding: 6,
