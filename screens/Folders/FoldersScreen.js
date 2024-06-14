@@ -6,12 +6,11 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
-import { UnifiedContext } from '../components/context/Context';
+import { UnifiedContext } from '../../components/context/Context';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const FoldersScreen = ({ navigation }) => {
     const { folders } = useContext(UnifiedContext);
-    console.log(folders);
 
     const renderFolderItem = (itemData) => {
         const { id, name, updateAt, notes } = itemData.item;
@@ -35,7 +34,7 @@ const FoldersScreen = ({ navigation }) => {
     return (
         <View style={styles.screen}>
             <View>
-                <Text style={{ color: "#5271ff", fontWeight: "bold" }}>3 folders</Text>
+                <Text style={{ color: "#5271ff", fontWeight: "bold" }}>{folders.length} folders</Text>
             </View>
 
             <FlatList
@@ -46,7 +45,7 @@ const FoldersScreen = ({ navigation }) => {
 
             <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => {}}
+                onPress={() => { navigation.navigate('NewFolder')}}
             >
                 <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>

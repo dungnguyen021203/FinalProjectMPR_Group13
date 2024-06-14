@@ -7,7 +7,7 @@ import {
     TextInput,
     StyleSheet
 } from 'react-native';
-import { UnifiedContext } from "../components/context/Context";
+import { UnifiedContext } from "../../components/context/Context";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen = ({ navigation }) => {

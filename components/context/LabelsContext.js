@@ -2,6 +2,8 @@ import { createContext, useReducer, useContext } from "react";
 import { LABELS } from "../../data/dummy-data";
 import { NotesContext } from "./NotesContext";
 
+// Not using this context in the app
+
 const initialState = {
   labels: LABELS,
 };

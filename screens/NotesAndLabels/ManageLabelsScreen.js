@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
-import { UnifiedContext } from "../components/context/Context";
-import IconButton from "../components/ui/IconButton";
+import { UnifiedContext } from "../../components/context/Context";
+import IconButton from "../../components/ui/IconButton";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 
 const ManageLabelsScreen = ({ navigation, route }) => {

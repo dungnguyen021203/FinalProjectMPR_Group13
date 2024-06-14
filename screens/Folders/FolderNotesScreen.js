@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { UnifiedContext } from '../components/context/Context';
+import { UnifiedContext } from '../../components/context/Context';
 
 const FolderNotesScreen = ({ route, navigation }) => {
     const { notes } = useContext(UnifiedContext);

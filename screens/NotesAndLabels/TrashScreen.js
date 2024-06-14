@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Alert, StyleSheet, Text, FlatList, Pressable } from "react-native";
-import Button from "../components/ui/Button";
-import { UnifiedContext } from "../components/context/Context";
+import Button from "../../components/ui/Button";
+import { UnifiedContext } from "../../components/context/Context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 

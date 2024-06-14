@@ -1,6 +1,8 @@
 import { createContext, useReducer } from "react";
 import { NOTES, TRASH, LABELS } from "../../data/dummy-data";
 
+// Not using this context in the app
+
 const initialState = {
   notes: NOTES,
   trash: TRASH,

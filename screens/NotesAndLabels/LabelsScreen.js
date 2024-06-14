@@ -7,8 +7,8 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
-import { UnifiedContext } from '../components/context/Context';
-import EditLabelModal from '../components/labelManage/EditLabelModal';
+import { UnifiedContext } from '../../components/context/Context';
+import EditLabelModal from '../../components/labelManage/EditLabelModal';
 
 const LabelsScreen = ({ navigation }) => {
     const unifiedCtx = useContext(UnifiedContext);

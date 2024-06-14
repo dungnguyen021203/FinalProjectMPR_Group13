@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { UnifiedContext } from "../components/context/Context";
-import { GlobalStyles } from "../constants/colors";
-import NoteForm from "../components/noteManage/NoteForm";
+import { UnifiedContext } from "../../components/context/Context";
+import { GlobalStyles } from "../../constants/colors";
+import NoteForm from "../../components/noteManage/NoteForm";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
 import {

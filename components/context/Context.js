@@ -74,6 +74,10 @@ function unifiedReducer(state, action) {
     case 'DELETE_LABEL':
       const updatedLabels = state.labels.filter((label) => label.id !== action.data);
       return { ...state, labels: updatedLabels };
+    
+    case 'ADD_FOLDER':
+      const newFolderId = "f" + Math.random().toString();
+      return { ...state, folders: [...state.folders, { id: newFolderId, ...action.data }] };
     default:
       return state;
   }
@@ -129,6 +133,10 @@ function UnifiedContextProvider({ children }) {
     removeLabelFromNotes(id);
   }
 
+  function addFolder(folderData) {
+    dispatch({ type: 'ADD_FOLDER', data: folderData });
+  }
+
   const value = {
     notes: state.notes,
     trash: state.trash,
@@ -145,6 +153,7 @@ function UnifiedContextProvider({ children }) {
     addLabel,
     editLabel,
     deleteLabel,
+    addFolder,
   };
 
   return <UnifiedContext.Provider value={value}>{children}</UnifiedContext.Provider>;
