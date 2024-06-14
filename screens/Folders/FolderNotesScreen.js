@@ -1,21 +1,51 @@
-import React, { useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { UnifiedContext } from '../../components/context/Context';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const FolderNotesScreen = ({ route, navigation }) => {
-    const { notes } = useContext(UnifiedContext);
-    const { notes: folderNoteIds = [] } = route.params;
+    const { notes, labels } = useContext(UnifiedContext);
+    const { notes: folderNoteIds = [], folderId } = route.params;
+    const [folderNotes, setFolderNotes] = useState([]);
 
-    // Find notes that belong to the selected folder
-    const folderNotes = notes.filter(note => folderNoteIds.includes(note.id));
+    useEffect(() => {
+        setFolderNotes(notes.filter(note => folderNoteIds.includes(note.id)));
+    }, [notes, folderNoteIds]);
 
     const renderNoteItem = (itemData) => {
-        const { content, updateAt } = itemData.item;
+        const {
+            id,
+            color,
+            labelIds = [],
+            content,
+            updateAt,
+            isBookmarked
+        } = itemData.item;
+
+        const noteLabels = (labelId) => {
+            const label = labels.find((label) => label.id === labelId);
+            return label ? label.label : '';
+        };
+
         return (
-            <View style={styles.noteContainer}>
-                <Text style={styles.noteContent}>{content}</Text>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('EditNote', { noteId: id })}
+                style={[
+                    styles.noteItem, {
+                        backgroundColor: color || '#ccc'
+                    }
+                ]}>
                 <Text style={styles.noteDate}>{new Date(updateAt).toLocaleString()}</Text>
-            </View>
+                <View style={styles.labelsContainer}>
+                    {labelIds && labelIds.map((labelId, index) => (
+                        <View key={index} style={styles.labelTag}>
+                            <Text style={styles.labelText}>{noteLabels(labelId)}</Text>
+                        </View>
+                    ))}
+                </View>
+                <Text style={styles.noteContent}>{content}</Text>
+                {isBookmarked && <Text style={styles.bookmarked}>★</Text>}
+            </TouchableOpacity>
         );
     };
 
@@ -33,8 +63,9 @@ const FolderNotesScreen = ({ route, navigation }) => {
                 </View>
             )}
             <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => navigation.navigate('NewNote')}
+                style={[styles.addButton, folderNotes.length > 0 && { backgroundColor: '#ccc' }]}
+                onPress={() => folderNotes.length === 0 && navigation.navigate('NewNoteInFolder', { folderId })}
+                disabled={folderNotes.length > 0}
             >
                 <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>
@@ -47,20 +78,43 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10
     },
-    noteContainer: {
+    noteItem: {
         padding: 15,
         marginVertical: 10,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 5
+        borderRadius: 10
+    },
+    noteDate: {
+        fontSize: 12,
+        color: '#666',
+        marginBottom: 5
+    },
+    labelsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginBottom: 10
+    },
+    labelTag: {
+        backgroundColor: '#e0e0e0',
+        borderRadius: 10,
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        marginRight: 5,
+        marginBottom: 5
+    },
+    labelText: {
+        fontSize: 12,
+        color: '#333'
     },
     noteContent: {
         fontSize: 16,
         fontWeight: 'bold'
     },
-    noteDate: {
-        fontSize: 12,
-        color: '#666',
-        marginTop: 5
+    bookmarked: {
+        fontSize: 18,
+        color: '#FFD700',
+        marginTop: 10,
+        position: 'absolute',
+        right: 15,
     },
     notFoundContainer: {
         flex: 1,

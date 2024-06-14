@@ -12,7 +12,23 @@ function unifiedReducer(state, action) {
   switch (action.type) {
     case 'ADD_NOTE':
       const noteId = "n" + Math.random().toString();
-      return { ...state, notes: [{ ...action.data, id: noteId }, ...state.notes] };
+      const newNote = { ...action.data, id: noteId };
+      const folderId = action.data.folderId;
+
+      let updatedFolders = state.folders;
+      if (folderId) {
+        updatedFolders = state.folders.map((folder) =>
+          folder.id === folderId
+            ? { ...folder, notes: [...folder.notes, noteId], updateAt: new Date() }
+            : folder
+        );
+      }
+
+      return {
+        ...state,
+        notes: [newNote, ...state.notes],
+        folders: updatedFolders,
+      };
     case 'EDIT_NOTE':
       return {
         ...state,

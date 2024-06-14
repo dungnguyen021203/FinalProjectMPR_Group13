@@ -14,6 +14,7 @@ import ManageLabelsScreen from "../../screens/NotesAndLabels/ManageLabelsScreen"
 
 import FolderNotesScreen from "../../screens/Folders/FolderNotesScreen";
 import NewFolderScreen from "../../screens/Folders/NewFolderScreen";
+import NewNoteInFolderScreen from "../../screens/Folders/NewNoteInFolderScreen";
 
 import { Ionicons } from '@expo/vector-icons';
 
@@ -44,6 +45,7 @@ function MainDrawerNavigator() {
         <Stack.Screen name="ManageLabels" component={ManageLabelsScreen} />
         <Stack.Screen name="FolderNotes" component={FolderNotesScreen} />
         <Stack.Screen name="NewFolder" component={NewFolderScreen} />
+        <Stack.Screen name="NewNoteInFolder" component={NewNoteInFolderScreen} />
       </Stack.Navigator>
     );
   }

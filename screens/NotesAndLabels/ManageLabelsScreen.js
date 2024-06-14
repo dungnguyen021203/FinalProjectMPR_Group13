@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   labelsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 10,
   },
   labelTag: {
     backgroundColor: "#e0e0e0",
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    width: SCREEN_WIDTH / 2,
+    width: SCREEN_WIDTH / 2 - 20,
     margin: 5,
   },
   highlightedLabelTag: {
@@ -100,7 +99,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     marginRight: 5,
     flex: 1,
-    width: SCREEN_WIDTH / 2,
+    width: SCREEN_WIDTH / 2 - 20,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "skyblue",
