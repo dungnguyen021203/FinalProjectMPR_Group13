@@ -129,8 +129,9 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     createLabelText: {
+        fontSize: 16,
         fontStyle: 'italic',
-        color: 'gray',
+        color: '#657ADD',
         marginVertical: 10,
     },
 });

@@ -4,13 +4,18 @@ import { UnifiedContext } from '../../components/context/Context';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const FolderNotesScreen = ({ route, navigation }) => {
-    const { notes, labels } = useContext(UnifiedContext);
-    const { notes: folderNoteIds = [], folderId } = route.params;
+    const { notes, labels, folders } = useContext(UnifiedContext);
+    const { folderId } = route.params;
+
     const [folderNotes, setFolderNotes] = useState([]);
 
     useEffect(() => {
-        setFolderNotes(notes.filter(note => folderNoteIds.includes(note.id)));
-    }, [notes, folderNoteIds]);
+        const folder = folders.find((folder) => folder.id === folderId);
+        if (folder) {
+            const folderNotes = notes.filter((note) => folder.notes.includes(note.id));
+            setFolderNotes(folderNotes);
+        }
+    }, [folderId, folders, notes]);
 
     const renderNoteItem = (itemData) => {
         const {
@@ -64,8 +69,7 @@ const FolderNotesScreen = ({ route, navigation }) => {
             )}
             <TouchableOpacity
                 style={[styles.addButton, folderNotes.length > 0 && { backgroundColor: '#ccc' }]}
-                onPress={() => folderNotes.length === 0 && navigation.navigate('NewNoteInFolder', { folderId })}
-                disabled={folderNotes.length > 0}
+                onPress={() => navigation.navigate('NewNoteInFolder', { folderId })}
             >
                 <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>

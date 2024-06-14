@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
                 ),
 
             headerRight: () => (
-                <TouchableOpacity onPress={() => setIsSearchVisible(!isSearchVisible)}>
+                <TouchableOpacity onPress={() => {setIsSearchVisible(!isSearchVisible), setFilteredNotes(notes), setSearchQuery('')}}>
                     <Icon
                         name={isSearchVisible
                         ? "close-outline"
@@ -94,7 +94,7 @@ const HomeScreen = ({ navigation }) => {
                     ))}
                 </View>
                 {notes.length > 0 ? <Text style={styles.noteContent}>{content}</Text>
-                : <Text style={styles.noteContent}>No notes found!</Text>
+                : <Text style={styles.noteContent}>Please add a new note!</Text>
                 }
                 {isBookmarked && <Text style={styles.bookmarked}>★</Text>}
             </TouchableOpacity>
@@ -110,7 +110,7 @@ const HomeScreen = ({ navigation }) => {
                     renderItem={renderNoteItem}/>)
                 : (
                     <View style={styles.notFoundContainer}>
-                        <Text style={styles.notFoundText}>Not found!</Text>
+                        <Text style={styles.notFoundText}>Not Found!</Text>
                     </View>
                 )}
             <TouchableOpacity

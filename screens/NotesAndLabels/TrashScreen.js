@@ -1,12 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Alert, StyleSheet, Text, FlatList, Pressable } from "react-native";
 import Button from "../../components/ui/Button";
 import { UnifiedContext } from "../../components/context/Context";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 function TrashScreen({ navigation }) {
     const { trash, restoreAllNotes, deleteAllNotes, restoreNote, deleteNote, labels } = useContext(UnifiedContext);
+    const [trashLabels, setTrashLabels] = useState([]);
+
+    useEffect(() => {
+        setTrashLabels(labels);
+    }, [labels]);
 
     const restoreAllNotesHandler = () => {
         Alert.alert(
@@ -30,12 +34,12 @@ function TrashScreen({ navigation }) {
         );
     };
 
-    function NoteItem({ id, color, updateAt, isBookmarked, labelIds, content }) {
+    function NoteItem({ id, color, updateAt, isBookmarked, labelIds = [], content }) {
         const route = useRoute();
 
         const getLabelContent = (labelId) => {
-            const foundLabel = labels.find((label) => label.id === labelId);
-            return foundLabel?.label || "";
+            const foundLabel = trashLabels.find((label) => label.id === labelId);
+            return foundLabel ? foundLabel.label : null;
         };
 
         function notePressHandler() {
@@ -53,18 +57,21 @@ function TrashScreen({ navigation }) {
         }
 
         return (
-            <Pressable onPress={notePressHandler} style={({ pressed }) => [styles.noteItem, { backgroundColor: color || '#ccc' }, pressed && styles.pressed] }>
+            <Pressable onPress={notePressHandler} style={({ pressed }) => [styles.noteItem, { backgroundColor: color || '#ccc' }, pressed && styles.pressed]}>
                 <Text style={styles.noteDate}>{new Date(updateAt).toLocaleString()}</Text>
                 <View style={styles.labelsContainer}>
-                    {labelIds && labelIds.map((labelId) => (
-                        <View key={labelId} style={styles.labelTag}>
-                            <Text style={styles.labelText}>{getLabelContent(labelId)}</Text>
-                        </View>
-                    ))}
+                    {labelIds && labelIds.map((labelId, index) => {
+                        const labelContent = getLabelContent(labelId);
+                        if (!labelContent) return null;
+                        return (
+                            <View key={index} style={styles.labelTag}>
+                                <Text style={styles.labelText}>{labelContent}</Text>
+                            </View>
+                        );
+                    })}
                 </View>
                 <Text style={styles.noteContent}>{content}</Text>
                 {isBookmarked && <Text style={styles.bookmarked}>★</Text>}
-                
             </Pressable>
         );
     }
@@ -74,10 +81,10 @@ function TrashScreen({ navigation }) {
     };
 
     return (
-        <View>
+        <View style={styles.container}>
             <View style={styles.buttonContainer}>
-                <Button onPress={restoreAllNotesHandler} children="Restore All" style={{ margin: 4, backgroundColor: '#00CCFF', borderRadius: 6, }} disabled={trash.length === 0} />
-                <Button onPress={deleteAllNotesHandler} children="Delete All" style={{ margin: 4, backgroundColor: '#FF0033', borderRadius: 6, }} disabled={trash.length === 0} />
+                <Button onPress={restoreAllNotesHandler} children="Restore All" style={{ margin: 4, backgroundColor: '#00CCFF', borderRadius: 6 }} disabled={trash.length === 0} />
+                <Button onPress={deleteAllNotesHandler} children="Delete All" style={{ margin: 4, backgroundColor: '#FF0033', borderRadius: 6 }} disabled={trash.length === 0} />
             </View>
 
             {trash.length === 0 ? (
@@ -96,6 +103,10 @@ function TrashScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 10,
+    },
     buttonContainer: {
         flexDirection: "row-reverse",
         padding: 10,
@@ -134,24 +145,10 @@ const styles = StyleSheet.create({
     },
     bookmarked: {
         fontSize: 18,
-        color: '#FFD700', 
+        color: '#FFD700',
         marginTop: 10,
         position: 'absolute',
         right: 15,
-    },
-    line: {
-        flexDirection: 'row',
-    },
-    lineColorDate: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-    },
-    lineLabel: {
-        flexDirection: 'row',
-    },
-    bookMark: {
-        marginLeft: 250,
-        marginVertical: 5,
     },
     pressed: {
         opacity: 0.75,

@@ -225,8 +225,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   colorPicker: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     borderRadius: 20,
     margin: 4,
   },

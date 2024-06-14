@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -10,14 +10,30 @@ import { UnifiedContext } from '../../components/context/Context';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const FoldersScreen = ({ navigation }) => {
-    const { folders } = useContext(UnifiedContext);
+    const { folders, notes } = useContext(UnifiedContext);
+    const [folderData, setFolderData] = useState([]);
+
+    useEffect(() => {
+        const updatedFolderData = folders.map(folder => {
+            const folderNotes = notes.filter(note => folder.notes.includes(note.id));
+            return { ...folder, notes: folderNotes };
+        });
+        setFolderData(updatedFolderData);
+    }, [folders, notes]);
 
     const renderFolderItem = (itemData) => {
         const { id, name, updateAt, notes } = itemData.item;
+
+        const serializableNotes = notes.map(note => ({
+            ...note,
+            // Convert Date objects to string
+            updateAt: note.updateAt.toISOString(),
+        }));
+
         return (
             <TouchableOpacity
                 style={styles.folderContainer}
-                onPress={() => navigation.navigate('FolderNotes', { folderId: id, notes })}
+                onPress={() => navigation.navigate('FolderNotes', { folderId: id, notes: serializableNotes })}
             >
                 <View style={styles.folderContent}>
                     <View>
@@ -34,11 +50,11 @@ const FoldersScreen = ({ navigation }) => {
     return (
         <View style={styles.screen}>
             <View>
-                <Text style={{ color: "#5271ff", fontWeight: "bold" }}>{folders.length} folders</Text>
+                <Text style={{ color: "#5271ff", fontWeight: "bold" }}>{folderData.length} folders</Text>
             </View>
 
             <FlatList
-                data={folders}
+                data={folderData}
                 keyExtractor={(item) => item.id}
                 renderItem={renderFolderItem}
             />
