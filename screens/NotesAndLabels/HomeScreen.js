@@ -5,7 +5,8 @@ import {
     FlatList,
     TouchableOpacity,
     TextInput,
-    StyleSheet
+    StyleSheet,
+    StatusBar
 } from 'react-native';
 import { UnifiedContext } from "../../components/context/Context";
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -103,6 +104,7 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.screen}>
+            <StatusBar style="auto"/>
             {filteredNotes.length > 0
                 ? (<FlatList
                     data={filteredNotes}

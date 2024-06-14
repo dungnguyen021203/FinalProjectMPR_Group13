@@ -22,7 +22,7 @@ function FolderForm({ onSubmit }) {
         onChangeText={setFolderName}
         value={folderName}
       />
-      <Button title="Create Folder" onPress={submitHandler} />
+      <Button title="Create Folder" onPress={submitHandler} disabled={folderName === ""}/>
     </View>
   );
 }
